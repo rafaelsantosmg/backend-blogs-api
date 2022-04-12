@@ -1,3 +1,12 @@
+const User = (model, through) => {
+  model.BlogPost.belongsTo(model.User, {
+    as: 'users',
+    through,
+    foreignKey: 'id',
+    otherKey: 'id',
+  });
+};
+
 module.exports = (sequelize, DataTypes) => {
   const BlogPost = sequelize.define('BlogPost', {
     title: DataTypes.STRING,
@@ -10,5 +19,10 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     timestamps: false,
   });
+
+  BlogPost.associate = (models) => {
+    User(models, BlogPost);
+  };
+
   return BlogPost;
 };
