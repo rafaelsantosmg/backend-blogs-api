@@ -1,4 +1,5 @@
 const express = require('express');
+const loginRouter = require('./routers/login');
 const userRouter = require('./routers/user');
 const handleError = require('./middlewares/handleError');
 
@@ -13,6 +14,7 @@ app.get('/', (request, response) => {
   response.send();
 });
 
+app.use('/login', loginRouter);
 app.use('/user', userRouter);
 
 app.use(handleError);
