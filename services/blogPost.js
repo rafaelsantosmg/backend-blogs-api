@@ -1,4 +1,4 @@
-const { BlogPost, Category } = require('../models');
+const { BlogPost, Category, User, PostsCategories } = require('../models');
 const errors = require('../middlewares/errorMiddleware');
 
 const create = async (userId, { title, categoryIds, content }) => {
@@ -17,9 +17,24 @@ const create = async (userId, { title, categoryIds, content }) => {
   return createPost;
 };
 
-const getAll = async () => {
-  const getCategories = await BlogPost.findAll();
-  return getCategories;
+const getAll = async (userId) => {
+  const getPosts = await BlogPost.findAll({ where: { userId } });
+  const getUser = await User.findOne({ 
+    where: { id: userId },
+    attributes: { exclude: 'password' },
+  });
+  await Promise.all(getPosts.map(async (post) => {
+    const posts = post.dataValues;
+    const { dataValues: { categoryId } } = await PostsCategories.findOne({
+      where: { postId: post.id },
+    });
+    const getCategory = await Category.findOne({ where: { id: categoryId } });
+    posts.user = getUser.dataValues;
+    posts.categories = [getCategory.dataValues];
+    return posts;
+  }));
+  
+  return getPosts;
 };
 
 module.exports = {

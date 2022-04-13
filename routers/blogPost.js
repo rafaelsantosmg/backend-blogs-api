@@ -3,9 +3,11 @@ const rescue = require('express-rescue');
 const validateJoi = require('../middlewares/validateJoi');
 const validateJWT = require('../auth/validateJWT');
 const { validatePost } = require('../schemas/JoiSchemas');
-const { create } = require('../controllers/blogPost');
+const { create, getAll } = require('../controllers/blogPost');
 
 router.use(validateJWT);
+
+router.get('/', rescue(getAll));
 
 router.post('/', validateJoi(validatePost), rescue(create));
 
