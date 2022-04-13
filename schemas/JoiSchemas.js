@@ -14,7 +14,12 @@ const validateLogin = Joi.object({
   password: Joi.string().required(),
 });
 
+const validateCategory = Joi.object({
+  name: Joi.string().required(),
+});
+
 module.exports = {
   validateUser,
   validateLogin,
+  validateCategory,
 };
