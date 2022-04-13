@@ -2,6 +2,7 @@ const express = require('express');
 const loginRouter = require('./routers/login');
 const userRouter = require('./routers/user');
 const categoryRouter = require('./routers/category');
+const blogPostRouter = require('./routers/blogPost');
 const handleError = require('./middlewares/handleError');
 
 const app = express();
@@ -18,5 +19,6 @@ app.get('/', (request, response) => {
 app.use('/login', loginRouter);
 app.use('/user', userRouter);
 app.use('/categories', categoryRouter);
+app.use('/post', blogPostRouter);
 
 app.use(handleError);
