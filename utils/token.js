@@ -5,7 +5,7 @@ const SECRET_KEY = process.env.JWT_SECRET;
 
 const createToken = (user) => {
   const token = jwt.sign({ data: user }, SECRET_KEY, {
-    expiresIn: '6h',
+    expiresIn: '7d',
     algorithm: 'HS256',
   });
 
