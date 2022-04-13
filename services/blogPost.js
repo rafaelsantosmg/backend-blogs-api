@@ -33,11 +33,29 @@ const getAll = async (userId) => {
     posts.categories = [getCategory.dataValues];
     return posts;
   }));
-  
+
   return getPosts;
+};
+
+const getById = async (id, userId) => {
+  const getPost = await BlogPost.findOne({ where: { id } });
+  if (!getPost) throw errors(404, 'Post does not exist');
+  const getUser = await User.findOne({ 
+    where: { id: userId },
+    attributes: { exclude: 'password' },
+  });
+  const { dataValues: { categoryId } } = await PostsCategories.findOne({
+    where: { postId: getPost.dataValues.id },
+  });
+  const getCategory = await Category.findOne({ where: { id: categoryId } });
+  getPost.dataValues.user = getUser.dataValues;
+  getPost.dataValues.categories = [getCategory.dataValues];
+
+  return getPost;
 };
 
 module.exports = {
   create,
   getAll,
+  getById,
 };
