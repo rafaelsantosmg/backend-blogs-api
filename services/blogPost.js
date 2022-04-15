@@ -53,25 +53,29 @@ const getById = async (id) => {
   return getPost;
 };
 
+const updatePost = (id) => (
+  BlogPost.findOne({
+  where: { id },
+  include: [
+    { model: User,
+    as: 'user',
+    attributes: { exclude: ['password'] } },
+    { model: Category,
+    as: 'categories',
+  through: { attributes: [] } },
+  ],
+}));
+
 const update = async (id, userId, post) => {
   if (post.categoryIds) throw errors(400, 'Categories cannot be edited');
   const getPost = await BlogPost.findOne({ where: { id } });
   if (getPost.dataValues.userId !== userId) throw errors(401, 'Unauthorized user');
-  const { dataValues: { categoryId } } = await PostsCategories.findOne({
-    where: { postId: getPost.dataValues.id },
-  });
-  const getCategory = await Category.findOne({ where: { id: categoryId } });
   await BlogPost.update({
     title: post.title,
     content: post.content,
     updated: new Date(),
-  }, { where: { id } });
-  return {
-    title: post.title,
-    content: post.content,
-    userId,
-    categories: [getCategory.dataValues],
-  };
+  }, { where: { userId, id } });
+  return updatePost(id);
 };
 
 module.exports = {
