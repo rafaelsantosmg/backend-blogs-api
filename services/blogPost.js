@@ -1,4 +1,4 @@
-const { BlogPost, Category, User, PostsCategories } = require('../models');
+const { BlogPost, Category, User } = require('../models');
 const errors = require('../middlewares/errorMiddleware');
 
 const create = async (userId, { title, categoryIds, content }) => {
@@ -78,9 +78,17 @@ const update = async (id, userId, post) => {
   return updatePost(id);
 };
 
+const destroy = async (id, userId) => {
+  const getPost = await BlogPost.findOne({ where: { id } });
+  if (!getPost) throw errors(404, 'Post does not exist');
+  if (getPost.dataValues.userId !== userId) throw errors(401, 'Unauthorized user');
+  await BlogPost.destroy({ where: { userId, id } });
+};
+
 module.exports = {
   create,
   getAll,
   getById,
   update,
+  destroy,
 };

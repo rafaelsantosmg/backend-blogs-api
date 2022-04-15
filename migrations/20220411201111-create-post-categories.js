@@ -8,6 +8,8 @@ module.exports = {
           model: 'BlogPosts',
           key: 'id',
         },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
       },
       categoryId: {
         type: Sequelize.INTEGER,

@@ -3,7 +3,7 @@ const rescue = require('express-rescue');
 const validateJoi = require('../middlewares/validateJoi');
 const validateJWT = require('../auth/validateJWT');
 const { validatePost, validateUpdatePost } = require('../schemas/JoiSchemas');
-const { create, getAll, getById, update } = require('../controllers/blogPost');
+const { create, getAll, getById, update, destroy } = require('../controllers/blogPost');
 
 router.use(validateJWT);
 
@@ -13,5 +13,7 @@ router.get('/:id', rescue(getById));
 router.post('/', validateJoi(validatePost), rescue(create));
 
 router.put('/:id', validateJoi(validateUpdatePost), rescue(update));
+
+router.delete('/:id', rescue(destroy));
 
 module.exports = router;
