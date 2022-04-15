@@ -18,8 +18,15 @@ const getById = async (req, res) => {
   return res.status(200).json(user);
 };
 
+const destroy = async (req, res) => {
+  const userId = req.user.dataValues.id;
+  await userService.destroy(userId);
+  return res.status(204).end();
+};
+
 module.exports = {
   create,
   getAll,
   getById,
+  destroy,
 };
