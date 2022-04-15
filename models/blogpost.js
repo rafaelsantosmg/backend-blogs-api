@@ -1,6 +1,6 @@
 const User = (model, through) => {
   model.BlogPost.belongsTo(model.User, {
-    as: 'users',
+    as: 'user',
     through,
     foreignKey: 'id',
     otherKey: 'id',

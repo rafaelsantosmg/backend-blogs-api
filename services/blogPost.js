@@ -18,21 +18,18 @@ const create = async (userId, { title, categoryIds, content }) => {
 };
 
 const getAll = async (userId) => {
-  const getPosts = await BlogPost.findAll({ where: { userId } });
-  const getUser = await User.findOne({ 
-    where: { id: userId },
-    attributes: { exclude: 'password' },
+  const getPosts = await BlogPost.findAll({ 
+    where: { userId },
+    include: [
+      { model: User,
+      as: 'user',
+      attributes: { exclude: ['password'] } },
+      { model: Category,
+      as: 'categories',
+      through: { attributes: [] },
+    },
+    ],
   });
-  await Promise.all(getPosts.map(async (post) => {
-    const posts = post.dataValues;
-    const { dataValues: { categoryId } } = await PostsCategories.findOne({
-      where: { postId: post.id },
-    });
-    const getCategory = await Category.findOne({ where: { id: categoryId } });
-    posts.user = getUser.dataValues;
-    posts.categories = [getCategory.dataValues];
-    return posts;
-  }));
 
   return getPosts;
 };

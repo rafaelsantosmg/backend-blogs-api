@@ -9,7 +9,7 @@ const Category = (model, through) => {
 
 const BlogPost = (model, through) => {
   model.BlogPost.belongsToMany(model.Category, {
-    as: 'category',
+    as: 'categories',
     through,
     foreignKey: 'postId',
     otherKey: 'categoryId',
