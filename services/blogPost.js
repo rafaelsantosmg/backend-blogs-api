@@ -1,3 +1,4 @@
+const Sequelize = require('sequelize');
 const { BlogPost, Category, User } = require('../models');
 const errors = require('../middlewares/errorMiddleware');
 
@@ -85,10 +86,29 @@ const destroy = async (id, userId) => {
   await BlogPost.destroy({ where: { userId, id } });
 };
 
+const { Op } = Sequelize;
+const search = async (q, userId) => {
+  if (!q) {
+    const post = await getAll(userId);
+    return post;
+  }  
+  const getPost = await BlogPost.findAll({ 
+    where: {
+      [Op.or]: [{ title: { [Op.like]: q } }, { content: { [Op.like]: q } }],
+    },
+    include: [
+      { model: User, as: 'user', attributes: { exclude: ['password'] } },
+      { model: Category, as: 'categories', through: { attributes: [] } }],
+    });
+
+  return getPost;
+};
+
 module.exports = {
   create,
   getAll,
   getById,
   update,
   destroy,
+  search,
 };
